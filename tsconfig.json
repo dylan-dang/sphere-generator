@@ -1,0 +1,17 @@
+{
+    "include": ["src/**/*"],
+    "compilerOptions": {
+        "target": "ES2015",
+        "jsx": "react",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "lib": ["ES6"],
+        "types": ["blockbench-types", "node", "web"],
+        "jsxFactory": "Preact.h",
+        "jsxFragmentFactory": "Preact.fragment"
+    }
+}
