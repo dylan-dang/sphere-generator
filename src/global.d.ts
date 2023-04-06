@@ -12,23 +12,19 @@ declare global {
         dialog: Dialog;
         download_stats: { [key: string]: number };
         installed: { id: string; path?: string; source: string }[];
-        json: { [key: string]: PluginData };
+        json: { [key: string]: PluginOptions };
         loading_promise: Promise<void>;
         path: string;
         registered: { [key: string]: Plugin };
         sort(): void;
     };
 
-    interface PluginData {
+    interface PluginOptions {
         version: string;
-        min_version?: string;
-        max_version?: string;
-        oninstall?(): void;
-        onuninstall?(): void;
     }
 
-    var open_interface: any;
-    var open_dialog: any;
+    var open_interface: boolean;
+    var open_dialog: boolean;
 
     const Prop: {
         _active_panel: string | undefined;
@@ -45,10 +41,6 @@ declare global {
         show_left_bar: boolean;
         show_right_bar: boolean;
     };
-
-    interface Math {
-        clamp(value: number, min: number, max: number): number;
-    }
 
     const window: Window;
 }

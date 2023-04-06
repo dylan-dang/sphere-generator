@@ -1,13 +1,13 @@
 const dialog = new Dialog({
-    id: 'sphere_generator_options',
+    id: 'sphere-generator-options',
     title: 'Options',
     lines: [`<div></div>`],
-    onConfirm() {},
+    onConfirm() { },
 });
 
-const menuAction = new Action('generate_sphere', {
+const menuAction = new Action('sphere-generator-action', {
     name: 'Generate Sphere',
-    description: 'Generates a textured sphere to import into Minecraft',
+    description: 'Generates a textured sphere block model',
     icon: 'sports_volleyball',
     click() {
         if (Format) {
@@ -16,10 +16,10 @@ const menuAction = new Action('generate_sphere', {
     },
 });
 
-Plugin.register('sphere-generator', {
+BBPlugin.register('sphere-generator', {
     title: 'Sphere Generator',
     author: 'Dylan Dang',
-    description: 'Generates a textured sphere to import into Minecraft',
+    description: 'Generates a textured sphere block model',
     icon: 'sports_volleyball',
     variant: 'both',
     version: '0.0.1',
@@ -37,6 +37,6 @@ Plugin.register('sphere-generator', {
 
         MenuBar.addAction(menuAction, 'tools');
     },
-    oninstall() {},
-    onuninstall() {},
+    oninstall() { },
+    onuninstall() { },
 });

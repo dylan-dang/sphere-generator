@@ -1,5 +1,6 @@
 {
     "name": "sphere-generator",
+    "description": "Generates a textured sphere block model",
     "scripts": {
         "build": "rollup --config rollup.config.ts --configPlugin typescript"
     },
