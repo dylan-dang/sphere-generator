@@ -1,9 +1,9 @@
 ///<reference types="blockbench-types" />
 ///<reference types="jqueryui" />
-import httpsModule from 'https';
+import type { Server } from 'http';
+
 
 declare global {
-    const https: typeof httpsModule;
     const DEBUG: boolean;
 
     interface PluginOptions {
@@ -44,4 +44,8 @@ declare global {
     };
 
     const window: Window;
+
+    interface Window {
+        devServer: Server | undefined;
+    }
 }

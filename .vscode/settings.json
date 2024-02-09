@@ -1,0 +1,9 @@
+{
+    "emeraldwalk.runonsave": {
+        "commands": [
+            {
+                "cmd": "curl localhost:8080"
+            }
+        ]
+    }
+}

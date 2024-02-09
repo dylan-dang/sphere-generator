@@ -1,6 +1,7 @@
 (function () {
     'use strict';
 
+    const id = 'sphere-generator';
     const manifest = {
         title: "Sphere Generator",
         author: "Dylan Dang",
@@ -12,12 +13,12 @@
     const { title, author, description, icon, variant, version } = manifest;
 
     const dialog = new Dialog({
-        id: 'sphere-generator-options',
+        id: `${id}-dialog`,
         title: 'Options',
         lines: [`<div></div>`],
         onConfirm() { },
     });
-    const menuAction = new Action('sphere-generator-action', {
+    const menuAction = new Action(`${id}-action`, {
         name: title,
         description,
         icon,
@@ -27,12 +28,12 @@
             }
         },
     });
-    BBPlugin.register('sphere-generator', Object.assign(Object.assign({}, manifest), { onload() {
-            menuAction.delete();
-            dialog.delete();
+    BBPlugin.register(id, Object.assign(Object.assign({}, manifest), { onload() {
+            MenuBar.addAction(menuAction, 'tools');
         },
         onunload() {
-            MenuBar.addAction(menuAction, 'tools');
+            menuAction.delete();
+            dialog.delete();
         },
         oninstall() { },
         onuninstall() { } }));
