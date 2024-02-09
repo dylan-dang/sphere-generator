@@ -2,9 +2,11 @@
     "name": "sphere-generator",
     "description": "Generates a textured sphere block model",
     "scripts": {
-        "build": "rollup --config rollup.config.ts --configPlugin typescript"
+        "build": "rollup --config rollup.config.ts --configPlugin typescript",
+        "prod": "build --configProduction"
     },
     "devDependencies": {
+        "@rollup/plugin-replace": "^5.0.5",
         "@rollup/plugin-typescript": "^11.1.0",
         "@types/jqueryui": "^1.12.16",
         "@types/node": "^18.15.11",

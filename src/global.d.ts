@@ -4,6 +4,11 @@ import httpsModule from 'https';
 
 declare global {
     const https: typeof httpsModule;
+    const DEBUG: boolean;
+
+    interface PluginOptions {
+        version: `${number}.${number}.${number}`
+    }
 
     const Plugins: {
         Vue: any[];
@@ -18,10 +23,6 @@ declare global {
         registered: { [key: string]: Plugin };
         sort(): void;
     };
-
-    interface PluginOptions {
-        version: string;
-    }
 
     var open_interface: boolean;
     var open_dialog: boolean;

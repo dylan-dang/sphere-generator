@@ -1,3 +1,5 @@
+import manifest, { title, icon, description, id } from './manifest'
+
 const dialog = new Dialog({
     id: 'sphere-generator-options',
     title: 'Options',
@@ -6,9 +8,9 @@ const dialog = new Dialog({
 });
 
 const menuAction = new Action('sphere-generator-action', {
-    name: 'Generate Sphere',
-    description: 'Generates a textured sphere block model',
-    icon: 'sports_volleyball',
+    name: title,
+    description,
+    icon,
     click() {
         if (Format) {
             dialog.show();
@@ -17,24 +19,20 @@ const menuAction = new Action('sphere-generator-action', {
 });
 
 BBPlugin.register('sphere-generator', {
-    title: 'Sphere Generator',
-    author: 'Dylan Dang',
-    description: 'Generates a textured sphere block model',
-    icon: 'sports_volleyball',
-    variant: 'both',
-    version: '0.0.1',
+    ...manifest,
     onload() {
         menuAction.delete();
         dialog.delete();
     },
     onunload() {
-        https
-            .createServer((_, res) => {
-                res.writeHead(200);
-                Plugins.devReload();
-            })
-            .listen(8080);
-
+        if (DEBUG) {
+            https
+                .createServer((_, res) => {
+                    res.writeHead(200);
+                    Plugins.devReload();
+                })
+                .listen(8080);
+        }
         MenuBar.addAction(menuAction, 'tools');
     },
     oninstall() { },
