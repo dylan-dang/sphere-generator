@@ -12,7 +12,10 @@ const menuAction = new Action(`${id}-action`, {
     name: title,
     description,
     icon,
-    click: () => Format && dialog.show(),
+    condition: {
+        modes: ['edit']
+    },
+    click: () => dialog.show(),
 });
 
 BBPlugin.register(id, {
