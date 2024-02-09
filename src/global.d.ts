@@ -24,6 +24,11 @@ declare global {
         sort(): void;
     };
 
+    interface Plugin {
+        id: string;
+        reload(): void;
+    }
+
     var open_interface: boolean;
     var open_dialog: boolean;
 

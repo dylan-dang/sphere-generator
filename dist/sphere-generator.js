@@ -15,18 +15,14 @@
     const dialog = new Dialog({
         id: `${id}-dialog`,
         title: 'Options',
-        lines: [`<div></div>`],
+        lines: [`<div>hello</div>`],
         onConfirm() { },
     });
     const menuAction = new Action(`${id}-action`, {
         name: title,
         description,
         icon,
-        click() {
-            if (Format) {
-                dialog.show();
-            }
-        },
+        click: () => Format && dialog.show(),
     });
     BBPlugin.register(id, Object.assign(Object.assign({}, manifest), { onload() {
             MenuBar.addAction(menuAction, 'tools');

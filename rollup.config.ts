@@ -6,11 +6,11 @@ import { id } from './src/manifest';
 export default (commandArgs) => defineConfig({
     input: 'src/index.ts',
     output: {
-        file: commandArgs.configProduction ? `dist/${id}.js` : `${process.env.APPDATA}/Blockbench/plugins/${id}.js`,
+        file: commandArgs.configDev ? `${process.env.APPDATA}/Blockbench/plugins/${id}.js` : `dist/${id}.js`,
         format: 'iife',
     },
     plugins: [replace({
-        DEBUG: commandArgs.configProduction ? 'false' : 'true',
+        DEBUG: commandArgs.configDev ? 'true' : 'false',
         preventAssignment: true,
     }), typescript()],
 });
