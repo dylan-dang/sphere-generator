@@ -3,6 +3,9 @@
 import type { Server } from 'http';
 
 declare global {
+    declare module "*.frag";
+    declare module "*.vert";
+
     const DEBUG: boolean;
 
     type FormResult<T extends Required<DialogOptions>['form']> = {

@@ -1,5 +1,6 @@
 import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
+import glslify from 'rollup-plugin-glslify';
 import { defineConfig } from 'rollup';
 import { id } from './src/manifest';
 
@@ -12,5 +13,5 @@ export default (commandArgs) => defineConfig({
     plugins: [replace({
         DEBUG: commandArgs.configDev ? 'true' : 'false',
         preventAssignment: true,
-    }), typescript()],
+    }), typescript(), glslify()],
 });

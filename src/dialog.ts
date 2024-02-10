@@ -22,7 +22,7 @@ const form = {
     },
     textureLength: { type: 'number', label: 'Texture Length', value: 512 },
     rotation: { type: 'vector', label: 'Rotation', value: [0, 0, 0] },
-    position: { type: 'vector', label: 'Position', value: [8, 8, 8] },
+    origin: { type: 'vector', label: 'Position', value: [8, 8, 8] },
     size: { type: 'file', label: 'Size', value: [16, 16, 16] },
     geometryDetail: { type: 'number', label: 'Geometry Detail', value: 16 },
     _: '_',
