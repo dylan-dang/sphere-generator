@@ -1,12 +1,6 @@
 import httpModule from 'http';
 import manifest, { title, icon, description, id } from './manifest'
-
-const dialog = new Dialog({
-    id: `${id}-dialog`,
-    title: 'Options',
-    lines: [`<div>hello</div>`],
-    onConfirm() { },
-});
+import dialog from './dialog'
 
 const menuAction = new Action(`${id}-action`, {
     name: title,

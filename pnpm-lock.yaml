@@ -25,6 +25,9 @@ devDependencies:
   '@types/three':
     specifier: ^0.150.1
     version: 0.150.1
+  '@types/tinycolor2':
+    specifier: ^1.4.6
+    version: 1.4.6
   blockbench-types:
     specifier: ^4.6.1
     version: 4.6.1
@@ -157,8 +160,8 @@ packages:
       lil-gui: 0.17.0
     dev: true
 
-  /@types/tinycolor2@1.4.3:
-    resolution: {integrity: sha512-Kf1w9NE5HEgGxCRyIcRXR/ZYtDv0V8FVPtYHwLxl0O+maGX0erE77pQlD0gpP+/KByMZ87mOA79SjifhSB3PjQ==}
+  /@types/tinycolor2@1.4.6:
+    resolution: {integrity: sha512-iEN8J0BoMnsWBqjVbWH/c0G0Hh7O21lpR2/+PrvAVgWdzL7eexIFm4JN/Wn10PTcmNdtS6U67r499mlWMXOxNw==}
     dev: true
 
   /@types/webxr@0.5.1:
@@ -177,7 +180,7 @@ packages:
     resolution: {integrity: sha512-iFDa5/4lZzIiJW6xCfQIW9VOjVcLS7Aj3zPhVOpzLXchdQXyOsudFCeIxJOLWgZ+apPj2tu9Q2DsXt/ik9YWpg==}
     dependencies:
       '@types/jquery': 3.5.16
-      '@types/tinycolor2': 1.4.3
+      '@types/tinycolor2': 1.4.6
       three: 0.129.0
       typescript: 4.9.5
       vue: 2.7.14
