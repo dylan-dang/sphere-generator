@@ -1,6 +1,6 @@
 
 
-export function showError(message: string): never {
+export function error(message: string): Error {
     Blockbench.showQuickMessage(message, 2000);
-    throw new Error(message);
+    return new Error(message);
 }
