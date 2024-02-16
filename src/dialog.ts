@@ -1,3 +1,4 @@
+import { generate } from "./geometry";
 import { id, title } from "./manifest";
 
 function imageInput(mappingCondition: string, label: string) {
@@ -23,25 +24,27 @@ const form = {
     textureLength: { type: 'number', label: 'Texture Length', value: 512 },
     rotation: { type: 'vector', label: 'Rotation', value: [0, 0, 0] },
     origin: { type: 'vector', label: 'Position', value: [8, 8, 8] },
-    size: { type: 'file', label: 'Size', value: [16, 16, 16] },
-    geometryDetail: { type: 'number', label: 'Geometry Detail', value: 16 },
+    size: { type: 'vector', label: 'Size', value: [16, 16, 16] },
+    geometryDetail: { type: 'number', label: 'Geometry Detail', value: 2 },
     _: '_',
+    smoothing: { type: 'checkbox', label: 'Smoothing', value: true },
     texture: imageInput('equirectangular', 'Texture'),
     north: imageInput('cube', 'North'),
     south: imageInput('cube', 'South'),
     east: imageInput('cube', 'East'),
     west: imageInput('cube', 'West'),
-    top: imageInput('cube', 'Top'),
-    bottom: imageInput('cube', 'Bottom'),
+    up: imageInput('cube', 'Top'),
+    down: imageInput('cube', 'Bottom'),
 } as const;
 
-export type Options = FormResult<typeof form>;
+type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+export type Options = FormResult<Writeable<typeof form>>;
 
 export default new Dialog({
     id: `${id}-dialog`,
     title: `${title} Options`,
     form,
     onConfirm(data) {
-
+        generate(data as Options);
     },
 });

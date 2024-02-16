@@ -2,7 +2,7 @@
     "emeraldwalk.runonsave": {
         "commands": [
             {
-                "cmd": "pnpm build:dev && curl localhost:8080"
+                "cmd": "START \"\" /WAIT taskkill /F /IM pnpm.exe  && pnpm build:dev && curl localhost:8080"
             }
         ]
     }
