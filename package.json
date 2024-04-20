@@ -10,7 +10,7 @@
         "@rollup/plugin-typescript": "^11.1.0",
         "@types/jqueryui": "^1.12.16",
         "@types/node": "^18.15.11",
-        "@types/three": "^0.150.1",
+        "@types/three": "^0.163.0",
         "@types/tinycolor2": "^1.4.6",
         "blockbench-types": "^4.6.1",
         "rollup": "^3.20.2",
