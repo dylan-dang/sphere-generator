@@ -3,28 +3,39 @@
 import type { Server } from 'http';
 
 declare global {
-    declare module "*.frag";
-    declare module "*.vert";
+    declare module '*.frag';
+    declare module '*.vert';
 
     const DEBUG: boolean;
 
     type FormResult<T extends Required<DialogOptions>['form']> = {
-        [K in keyof T as T[K] extends DialogFormElement ? K : never]:
-        T[K] extends DialogFormElement ?
-        T[K]['type'] extends 'select' ?
-        T[K]['options'] extends object ? keyof T[K]['options'] : never :
-        T[K]['type'] extends 'number' | 'range' ? number :
-        T[K]['type'] extends 'vector' ? [number, number, number] :
-        T[K]['type'] extends 'checkbox' ? boolean :
-        T[K]['type'] extends 'textarea' | 'text' | 'save' ? string :
-        T[K]['type'] extends 'file' | 'folder' ? string | undefined :
-        T[K]['type'] extends 'color' ? TinyColor :
-        T[K]['type'] extends DialogFormElement['type'] ? unknown :
-        never : never;
-    }
+        [K in keyof T as T[K] extends DialogFormElement
+            ? K
+            : never]: T[K] extends DialogFormElement
+            ? T[K]['type'] extends 'select'
+                ? T[K]['options'] extends object
+                    ? keyof T[K]['options']
+                    : never
+                : T[K]['type'] extends 'number' | 'range'
+                ? number
+                : T[K]['type'] extends 'vector'
+                ? [number, number, number]
+                : T[K]['type'] extends 'checkbox'
+                ? boolean
+                : T[K]['type'] extends 'textarea' | 'text' | 'save'
+                ? string
+                : T[K]['type'] extends 'file' | 'folder'
+                ? string | undefined
+                : T[K]['type'] extends 'color'
+                ? TinyColor
+                : T[K]['type'] extends DialogFormElement['type']
+                ? unknown
+                : never
+            : never;
+    };
 
     interface PluginOptions {
-        version: `${number}.${number}.${number}`
+        version: `${number}.${number}.${number}`;
     }
 
     const Plugins: {

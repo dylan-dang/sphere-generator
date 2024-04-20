@@ -1,14 +1,14 @@
-import { generate } from "./geometry";
-import { id, title } from "./manifest";
+import { generate } from './geometry';
+import { id, title } from './manifest';
 
 function imageInput(mappingCondition: string, label: string) {
     return {
-        type: "file",
+        type: 'file',
         label,
-        readtype: "image",
+        readtype: 'image',
         placeholder: 'Missing',
         extensions: ['png', 'jpg', 'jpeg', 'bmp', 'tiff', 'tif', 'gif'],
-        condition: ({ mapping }) => mapping == mappingCondition
+        condition: ({ mapping }) => mapping == mappingCondition,
     } satisfies DialogFormElement;
 }
 
@@ -18,8 +18,8 @@ const form = {
         label: 'Texture Mapping',
         options: {
             equirectangular: 'Equirectangular',
-            cube: 'Cube'
-        }
+            cube: 'Cube',
+        },
     },
     textureLength: { type: 'number', label: 'Texture Length', value: 512 },
     rotation: { type: 'vector', label: 'Rotation', value: [0, 0, 0] },

@@ -20,7 +20,7 @@ BBPlugin.register(id, {
             const http: typeof httpModule = require('http');
             window.devServer = http.createServer((_, res) => {
                 res.writeHead(200);
-                Plugins.all.find(plugin => plugin.id == id)?.reload();
+                Plugins.devReload();
                 console.log('Plugin reloaded');
                 res.end('Plugin reloaded');
             }).listen(8080);

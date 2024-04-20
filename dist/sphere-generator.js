@@ -12,6 +12,38 @@
     };
     const { title, author, description, icon, variant, version } = manifest;
 
+    /******************************************************************************
+    Copyright (c) Microsoft Corporation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
+    ***************************************************************************** */
+    /* global Reflect, Promise, SuppressedError, Symbol */
+
+
+    function __awaiter(thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    }
+
+    typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+        var e = new Error(message);
+        return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+    };
+
     function error(message) {
         Blockbench.showQuickMessage(message, 2000);
         return new Error(message);
@@ -72,22 +104,33 @@
         gl.texParameteri(type, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     }
     function loadImg(src) {
-        if (!src)
-            return null;
-        return null;
+        return new Promise((resolve, reject) => {
+            if (!src)
+                return void resolve(null);
+            const image = new Image();
+            image.onload = function () {
+                resolve(image);
+            };
+            image.onerror = () => {
+                reject(error(`Texture could not be loaded from file '${src}`));
+            };
+            image.src = src;
+        });
     }
 
     function loadCube(ctx) {
-        const { gl, opts } = ctx;
-        const canvas = document.createElement('canvas');
-        canvas.width = canvas.height = opts.textureLength;
-        const cubemap = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubemap);
-        defaultTex(ctx, gl.TEXTURE_CUBE_MAP);
-        // correct rotation and output texture size
-        SIDES.map((side) => opts[side])
-            .map(loadImg)
-            .forEach(renderFace, { canvas, ctx });
+        return __awaiter(this, void 0, void 0, function* () {
+            const { gl, opts } = ctx;
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = opts.textureLength;
+            const cubemap = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubemap);
+            defaultTex(ctx, gl.TEXTURE_CUBE_MAP);
+            // correct rotation and output texture size
+            const images = yield Promise.all(SIDES.map((side) => opts[side])
+                .map(loadImg));
+            images.forEach(renderFace, { canvas, ctx });
+        });
     }
     function renderFace(image, index) {
         const { canvas, ctx: { gl }, } = this;
@@ -125,25 +168,27 @@
     var erpToCubeVert = "#define GLSLIFY 1\nattribute vec2 position;\nvarying vec3 pointOnCubeSurface;\nuniform lowp int face;\n\n#define u position.x\n#define v position.y\n\n#define NORTH face == 0\n#define SOUTH face == 1\n#define WEST  face == 2\n#define LEFT  face == 3\n#define UP    face == 4\n#define DOWN  face == 5\n\nvoid main() {\n    //switch case not available in OpenGL-ES 2.0\n    if      (NORTH) pointOnCubeSurface = vec3(-v, 1.0, -u);\n    else if (SOUTH) pointOnCubeSurface = vec3(-v, -1.0, u);\n    else if (WEST)  pointOnCubeSurface = vec3(1.0, u, v);\n    else if (LEFT)  pointOnCubeSurface = vec3(-1.0, u, -v);\n    else if (UP)    pointOnCubeSurface = vec3(-v, u, 1.0);\n    else if (DOWN)  pointOnCubeSurface = vec3(-v, -u, -1.0);\n    \n    gl_Position = vec4(position, 0, 1.0);\n}"; // eslint-disable-line
 
     function loadEquirectangular(ctx) {
-        const { gl, opts: { texture: src }, } = ctx;
-        const img = loadImg(src);
-        if (!img) {
-            for (const side of SIDES) {
-                ctx.opts[side] = undefined;
+        return __awaiter(this, void 0, void 0, function* () {
+            const { gl, opts: { texture: src }, } = ctx;
+            const img = yield loadImg(src);
+            if (!img) {
+                for (const side of SIDES) {
+                    ctx.opts[side] = undefined;
+                }
+                loadCube(ctx);
+                return;
             }
-            loadCube(ctx);
-            return;
-        }
-        const program = createProgram(ctx, erpToCubeVert, erpToCubeFrag);
-        useProgram(ctx, program);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        const texture = createEquirectangular2dTexture(ctx, img);
-        const cubemap = createCubeMap(ctx);
-        const fbo = createFrameBuffer(gl, program, cubemap);
-        //unbind framebuffer and delete objects
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        gl.deleteFramebuffer(fbo);
-        gl.deleteTexture(texture);
+            const program = createProgram(ctx, erpToCubeVert, erpToCubeFrag);
+            useProgram(ctx, program);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            const texture = createEquirectangular2dTexture(ctx, img);
+            const cubemap = createCubeMap(ctx);
+            const fbo = createFrameBuffer(gl, program, cubemap);
+            //unbind framebuffer and delete objects
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            gl.deleteFramebuffer(fbo);
+            gl.deleteTexture(texture);
+        });
     }
     function createEquirectangular2dTexture(ctx, img) {
         const { gl } = ctx;
@@ -208,71 +253,77 @@
     }
 
     function generateTextures(opts) {
-        const ctx = createContext(opts);
-        ({
-            equirectangular: loadEquirectangular,
-            cube: loadCube
-        })[opts.mapping](ctx);
-        return renderOrthogonalHemispheres(ctx).map((dataUrl, i) => new Texture({
-            name: SIDES[i],
-            id: SIDES[i]
-        }).fromDataURL(dataUrl));
+        return __awaiter(this, void 0, void 0, function* () {
+            const ctx = createContext(opts);
+            yield ({
+                equirectangular: loadEquirectangular,
+                cube: loadCube
+            })[opts.mapping](ctx);
+            return renderOrthogonalHemispheres(ctx).map((dataUrl, i) => {
+                console.log(dataUrl);
+                return new Texture({
+                    name: SIDES[i],
+                    id: SIDES[i]
+                }).fromDataURL(dataUrl);
+            });
+        });
     }
 
-    function generate(opts) {
-        Undo.initEdit({ outliner: true, elements: [], textures: [], selection: true });
-        const { origin, geometryDetail, size } = opts;
-        const originVec = new THREE.Vector3().fromArray(origin);
-        let textures = generateTextures(opts);
-        const group = new Group({
-            name: 'sphere',
-            origin
-        });
-        const elements = subdivideOctant(geometryDetail).map((point) => {
-            const corner = point.clone().multiply(scaling);
-            point.multiplyScalar(8);
-            const cube = new Cube({
-                name: 'inscribed cuboid',
-                to: corner.clone().add(originVec).toArray(),
-                from: corner.negate().add(originVec).toArray(),
-                origin,
-                autouv: 0
-            });
-            textures.forEach((texture, i) => {
-                cube.applyTexture(texture, [SIDES[i]]);
-            });
-            cube.addTo(group);
-            cube.init();
-            return cube;
-        });
-        const scaling = new THREE.Vector3().fromArray(size.map((i) => i / 2));
-        Undo.finishEdit('Generated Shape', { outliner: true, elements, textures });
+    function mapUV(face, point) {
+        const a = ['west', 'east'].includes(face) ? point.z : point.x;
+        const b = ['up', 'down'].includes(face) ? point.z : point.y;
+        return [8 - a, 8 - b, 8 + a, 8 + b];
     }
-    function subdivideOctant(subdivisions) {
-        const n = Math.pow(2, subdivisions) + 1;
+    function generate(opts) {
+        return __awaiter(this, void 0, void 0, function* () {
+            Undo.initEdit({ outliner: true, elements: [], textures: [], selection: true });
+            const { origin, geometryDetail, size } = opts;
+            const originVec = new THREE.Vector3().fromArray(origin);
+            let textures = yield generateTextures(opts);
+            const group = new Group({
+                name: 'sphere',
+                origin
+            });
+            const scaling = new THREE.Vector3().fromArray(size.map((i) => i / 2));
+            const elements = subdivideOctant(geometryDetail).map((point) => {
+                const corner = point.clone().multiply(scaling);
+                point.multiplyScalar(8);
+                const cube = new Cube({
+                    name: 'inscribed cuboid',
+                    to: corner.clone().add(originVec).toArray(),
+                    from: corner.negate().add(originVec).toArray(),
+                    origin,
+                    autouv: 0
+                });
+                cube.faces = Object.fromEntries(SIDES.map((side, i) => [
+                    side,
+                    new CubeFace(side, {
+                        uv: mapUV(side, point),
+                        texture: textures[i]
+                    }, cube),
+                ]));
+                cube.addTo(group);
+                cube.init();
+                return cube;
+            });
+            Undo.finishEdit('Generated Shape', { outliner: true, elements, textures, group });
+        });
+    }
+    /* based on fibonacci sphere */
+    function subdivideOctant(points) {
+        // compensate for getting rid of z,x < 0
+        const n = points * 4;
+        const goldenRatio = (1 + Math.sqrt(5)) / 2;
         const verts = [];
         for (let i = 0; i < n; i++) {
-            const theta = Math.PI * 0.5 * i / (n - 1);
-            const a = new THREE.Vector3(0, Math.sin(theta), Math.cos(theta));
-            const b = new THREE.Vector3(Math.cos(theta), Math.sin(theta), 0);
-            const nSegments = n - 1 - i;
-            verts.push(...computeGeodesic(a, b, nSegments));
+            const theta = 2 * Math.PI * i / goldenRatio;
+            const phi = Math.acos(1 - i / n);
+            const vert = new THREE.Vector3().setFromSphericalCoords(1, phi, theta);
+            if (vert.x > 0 && vert.z > 0) {
+                verts.push(vert);
+            }
         }
         return verts;
-    }
-    function computeGeodesic(a, b, nSegments) {
-        const angle = Math.acos(a.dot(b));
-        const axis = a.clone().cross(b).normalize();
-        const points = [a.clone()];
-        if (nSegments == 0)
-            return points;
-        const dTheta = angle / nSegments;
-        for (let i = 1; i < nSegments; i++) {
-            const theta = i * dTheta;
-            points.push(a.applyAxisAngle(axis, theta).clone());
-        }
-        points.push(b.clone());
-        return points;
     }
 
     function imageInput(mappingCondition, label) {
@@ -298,7 +349,7 @@
         rotation: { type: 'vector', label: 'Rotation', value: [0, 0, 0] },
         origin: { type: 'vector', label: 'Position', value: [8, 8, 8] },
         size: { type: 'vector', label: 'Size', value: [16, 16, 16] },
-        geometryDetail: { type: 'number', label: 'Geometry Detail', value: 1 },
+        geometryDetail: { type: 'number', label: 'Geometry Detail', value: 2 },
         _: '_',
         smoothing: { type: 'checkbox', label: 'Smoothing', value: true },
         texture: imageInput('equirectangular', 'Texture'),

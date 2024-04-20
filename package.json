@@ -3,7 +3,7 @@
     "description": "Generates a textured sphere block model",
     "scripts": {
         "build": "rollup --config rollup.config.ts --configPlugin typescript",
-        "build:dev": "pnpm build --configDev"
+        "build:dev": "pnpm build --configDev && curl localhost:8080"
     },
     "devDependencies": {
         "@rollup/plugin-replace": "^5.0.5",

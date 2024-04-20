@@ -1,9 +1,14 @@
-import { Ctx, createProgram, useProgram } from "./common";
+import { Ctx, createProgram, useProgram } from './common';
 import cubeToHemiFrag from '../shaders/cubeToHemi.frag';
-import cubeToHemiVert from '../shaders/cubeToHemi.vert'
+import cubeToHemiVert from '../shaders/cubeToHemi.vert';
 import THREE from 'three';
 
-function renderHemisphere(ctx: Ctx, angleLocation: WebGLUniformLocation | null, phi: number, theta: number) {
+function renderHemisphere(
+    ctx: Ctx,
+    angleLocation: WebGLUniformLocation | null,
+    phi: number,
+    theta: number
+) {
     const { gl, canvas } = ctx;
     gl.uniform2f(angleLocation, phi, theta);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
@@ -11,7 +16,10 @@ function renderHemisphere(ctx: Ctx, angleLocation: WebGLUniformLocation | null, 
 }
 
 export function renderOrthogonalHemispheres(ctx: Ctx) {
-    const { gl, opts: { rotation } } = ctx;
+    const {
+        gl,
+        opts: { rotation },
+    } = ctx;
     const program = createProgram(ctx, cubeToHemiVert, cubeToHemiFrag);
     useProgram(ctx, program);
 

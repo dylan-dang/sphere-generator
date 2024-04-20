@@ -1,12 +1,12 @@
 export const id = 'sphere-generator';
 
 const manifest = {
-    title: "Sphere Generator",
-    author: "Dylan Dang",
-    description: "Generates a textured sphere block model",
-    icon: "sports_volleyball",
-    variant: "both",
-    version: "0.0.1"
+    title: 'Sphere Generator',
+    author: 'Dylan Dang',
+    description: 'Generates a textured sphere block model',
+    icon: 'sports_volleyball',
+    variant: 'both',
+    version: '0.0.1',
 } satisfies PluginOptions;
 
 export const { title, author, description, icon, variant, version } = manifest;

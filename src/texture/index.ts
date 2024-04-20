@@ -6,14 +6,15 @@ import { renderOrthogonalHemispheres } from './orthographic';
 
 export async function generateTextures(opts: Options) {
     const ctx = createContext(opts);
-    await ({
+    await {
         equirectangular: loadEquirectangular,
-        cube: loadCube
-    })[opts.mapping](ctx);
+        cube: loadCube,
+    }[opts.mapping](ctx);
     return renderOrthogonalHemispheres(ctx).map((dataUrl, i) => {
-        console.log(dataUrl); return new Texture({
+        console.log(dataUrl);
+        return new Texture({
             name: SIDES[i],
-            id: SIDES[i]
-        }).fromDataURL(dataUrl)
+            id: SIDES[i],
+        }).fromDataURL(dataUrl);
     });
 }
