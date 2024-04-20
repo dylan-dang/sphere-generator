@@ -1,4 +1,3 @@
-precision mediump float;
 uniform samplerCube cubemap;
 varying vec2 texCoord;
 

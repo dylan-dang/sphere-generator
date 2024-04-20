@@ -1,5 +1,3 @@
-precision mediump float;
-    
 varying vec3 pointOnCubeSurface;
 uniform sampler2D textureSampler;
 
