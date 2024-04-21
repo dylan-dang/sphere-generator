@@ -13,6 +13,7 @@ uniform vec4 rotation;
 void main() {
     //formula is from https://en.wikipedia.org/wiki/Orthographic_map_projection
     float rho = length(texCoord);
+    gl_FragColor = vec4(0, 0, 0, 0);
     if (rho>1.0) return;
     float c = asin(rho);
 
