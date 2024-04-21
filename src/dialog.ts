@@ -25,7 +25,7 @@ const form = {
     rotation: { type: 'vector', label: 'Rotation', value: [0, 0, 0] },
     origin: { type: 'vector', label: 'Position', value: [8, 8, 8] },
     size: { type: 'vector', label: 'Size', value: [16, 16, 16] },
-    geometryDetail: { type: 'number', label: 'Geometry Detail', value: 2 },
+    geometryDetail: { type: 'number', label: 'Geometry Detail', value: 512 },
     _: '_',
     smoothing: { type: 'checkbox', label: 'Smoothing', value: true },
     equirectangular: imageInput('equirectangular', 'Texture'),
