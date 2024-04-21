@@ -24,7 +24,7 @@ export async function generate(opts: Options) {
     const group = new Group({
         name: 'sphere',
         origin,
-    });
+    }).init();
 
     const scaling = new THREE.Vector3().fromArray(size.map((i) => i / 2));
 
@@ -37,22 +37,15 @@ export async function generate(opts: Options) {
             from: corner.negate().add(originVec).toArray(),
             origin,
             autouv: 0,
+        })
+            .addTo(group)
+            .init();
+        SIDES.forEach((side, i) => {
+            cube.faces[side].extend({
+                texture: textures[i],
+                uv: mapUV(side, point),
+            });
         });
-        cube.faces = Object.fromEntries(
-            SIDES.map((side, i) => [
-                side,
-                new CubeFace(
-                    side,
-                    {
-                        uv: mapUV(side, point),
-                        texture: textures[i],
-                    },
-                    cube
-                ),
-            ])
-        );
-        cube.addTo(group);
-        cube.init();
         return cube;
     });
 
