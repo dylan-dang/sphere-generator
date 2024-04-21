@@ -15,11 +15,13 @@ import {
     Vector2,
     Quaternion,
     Euler,
+    LinearFilter,
+    NearestFilter,
 } from 'three';
 import { SIDES } from './common';
 
 const missing =
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAQSURBVBhXY/gPhBDwn+E/ABvyA/1Bas9NAAAAAElFTkSuQmCC';
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIAAQMAAADOtka5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURf8A/wAAAJ+mFPIAAAAJcEhZcwAADsIAAA7CARUoSoAAAACTSURBVHja7c4xDQAACASx928aJDAwQXoCmstUDQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbIEDiwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+A0kDXH3Dske5kGcAAAAASUVORK5CYII=';
 
 const angles: Vector2[] = [
     new Vector2(0, 0),
@@ -31,13 +33,14 @@ const angles: Vector2[] = [
 ];
 
 export async function generateTextures(opts: Options) {
-    const { textureLength, rotation } = opts;
+    const { textureLength, rotation, smoothing } = opts;
     const renderer = new WebGLRenderer({
         antialias: false,
         preserveDrawingBuffer: true,
     });
     renderer.setSize(textureLength, textureLength);
-    const texture = loadTexture(renderer, opts);
+    const texture = await loadTexture(renderer, opts);
+    texture.magFilter = smoothing ? LinearFilter : NearestFilter;
     const planeGeometry = new PlaneGeometry(2, 2);
     const scene = new Scene();
     const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -58,10 +61,9 @@ export async function generateTextures(opts: Options) {
         planeMaterial.uniforms.angle.value = angle;
         renderer.render(scene, camera);
         const dataURL = renderer.domElement.toDataURL();
-        return new Texture({
-            name: SIDES[i],
-            id: SIDES[i],
-        }).fromDataURL(dataURL);
+        const texture = new Texture({ name: SIDES[i] }).fromDataURL(dataURL);
+        texture.add();
+        return texture;
     });
 }
 
@@ -88,8 +90,11 @@ async function loadTexture(
         return target.texture;
     }
     const loader = new CubeTextureLoader();
-    const texture = loader.loadAsync(
-        [north, south, west, east, up, down].map((side) => side || missing)
+    console.log(equirectangular);
+    const texture = await loader.loadAsync(
+        [north, south, west, east, up, down].map((side) =>
+            side && mapping == 'cube' ? side : missing
+        )
     );
     return texture;
 }
