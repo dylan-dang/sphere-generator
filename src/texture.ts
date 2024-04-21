@@ -99,7 +99,6 @@ async function loadTexture(
         return target.texture;
     }
     const loader = new CubeTextureLoader();
-    console.log(equirectangular);
     const texture = await loader.loadAsync(
         [north, south, west, east, up, down].map((side) =>
             side && mapping == 'cube' ? side : missing
