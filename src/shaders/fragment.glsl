@@ -13,7 +13,7 @@ uniform vec4 rotation;
 void main() {
     //formula is from https://en.wikipedia.org/wiki/Orthographic_map_projection
     float rho = length(texCoord);
-    gl_FragColor = vec4(0, 0, 0, 0);
+    
     if (rho>1.0) return;
     float c = asin(rho);
 
@@ -22,6 +22,6 @@ void main() {
 
     vec3 direction = vec3(cos(phi)*cos(theta), cos(phi)*sin(theta), sin(phi));
     direction = direction + 2.0*cross(cross(direction, rotation.xyz) + rotation.w * direction, rotation.xyz);
-    //direction = direction + 2.0*cross(rotation.xyz, cross(rotation.xyz, direction) + rotation.w * direction);
+
     gl_FragColor = textureCube(cubemap, direction);
 }
