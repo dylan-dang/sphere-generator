@@ -120,7 +120,9 @@ export async function generateTextures(opts: Options) {
 
 async function loadTexture(
     renderer: WebGLRenderer,
-    {
+    opts: Options
+): Promise<CubeTexture> {
+    const {
         mapping,
         equirectangular,
         textureLength,
@@ -131,8 +133,7 @@ async function loadTexture(
         up,
         down,
         smoothing,
-    }: Options
-): Promise<CubeTexture> {
+    } = opts;
     const filter = smoothing ? LinearFilter : NearestFilter;
     if (mapping == 'equirectangular' && equirectangular) {
         const loader = new TextureLoader();
@@ -145,11 +146,45 @@ async function loadTexture(
         return target.texture;
     }
     const loader = new CubeTextureLoader();
-    const texture = await loader.loadAsync(
-        [north, south, west, east, up, down].map((side) =>
-            side && mapping == 'cube' ? side : missing
-        )
-    );
+    let faces = [east, west, up, down, north, south];
+    let processed = await Promise.all(faces.map(preprocessCubeFaces(opts)));
+    const texture = await loader.loadAsync(processed);
     texture.magFilter = texture.minFilter = filter;
     return texture;
+}
+
+function drawMissingTexture(ctx: CanvasRenderingContext2D, length: number) {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, length, length);
+    ctx.fillStyle = 'magenta';
+    ctx.fillRect(0, 0, length / 2, length / 2);
+    ctx.fillRect(length / 2, length / 2, length, length);
+}
+
+function preprocessCubeFaces({ textureLength, smoothing, mapping }: Options) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw error('Context2d could not be created');
+    ctx.imageSmoothingEnabled = smoothing;
+    canvas.width = canvas.height = textureLength;
+    ctx.translate(textureLength, 0);
+    ctx.scale(-1, 1);
+    drawMissingTexture(ctx, textureLength);
+    const missingTexture = canvas.toDataURL();
+    ctx.clearRect(0, 0, textureLength, textureLength);
+
+    return (src?: string): Promise<string> =>
+        new Promise((resolve, reject) => {
+            if (mapping != 'cube' || !src) return void resolve(missingTexture);
+            const image = new Image();
+            image.onload = () => {
+                ctx.drawImage(image, 0, 0, textureLength, textureLength);
+                const url = canvas.toDataURL();
+                resolve(url);
+            };
+            image.onerror = () => {
+                reject(error(`Texture could not be loaded from file '${src}`));
+            };
+            image.src = src;
+        });
 }
