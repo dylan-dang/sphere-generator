@@ -1,4 +1,4 @@
-Sphere Generator lets you create spherical block models.
+Sphere Generator lets you create spherical block models within BlockBench.
 
 It works by creating a specified amount of cubes in the shape of sphere and then texturing each side to a an pre-rendered sphere.
 As you increase geometry detail, the model becomes closer and closer to a sphere.
