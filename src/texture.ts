@@ -18,18 +18,27 @@ import {
     LinearFilter,
     NearestFilter,
 } from 'three';
-import { SIDES } from './common';
 
 const missing =
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIAAQMAAADOtka5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURf8A/wAAAJ+mFPIAAAAJcEhZcwAADsIAAA7CARUoSoAAAACTSURBVHja7c4xDQAACASx928aJDAwQXoCmstUDQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbIEDiwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+A0kDXH3Dske5kGcAAAAASUVORK5CYII=';
 
-const angles: Vector2[] = [
-    new Vector2(0, 0),
-    new Vector2(0, (1 * Math.PI) / 2),
-    new Vector2(0, (2 * Math.PI) / 2),
-    new Vector2(0, (3 * Math.PI) / 2),
-    new Vector2(Math.PI / 2, Math.PI),
-    new Vector2(-Math.PI / 2, Math.PI),
+interface FaceInfo {
+    face: CubeFaceDirection;
+    angle: Vector2;
+}
+
+interface TextureInfo {
+    face: CubeFaceDirection;
+    texture: Texture;
+}
+
+const faces: FaceInfo[] = [
+    { face: 'north', angle: new Vector2(0, 0) },
+    { face: 'south', angle: new Vector2(0, (1 * Math.PI) / 2) },
+    { face: 'west', angle: new Vector2(0, (2 * Math.PI) / 2) },
+    { face: 'east', angle: new Vector2(0, (3 * Math.PI) / 2) },
+    { face: 'up', angle: new Vector2(Math.PI / 2, Math.PI) },
+    { face: 'down', angle: new Vector2(-Math.PI / 2, Math.PI) },
 ];
 
 export async function generateTextures(opts: Options) {
@@ -57,13 +66,13 @@ export async function generateTextures(opts: Options) {
     });
     const plane = new Mesh(planeGeometry, planeMaterial);
     scene.add(plane);
-    return angles.map((angle, i) => {
+    return faces.map(({ angle, face }): TextureInfo => {
         planeMaterial.uniforms.angle.value = angle;
         renderer.render(scene, camera);
         const dataURL = renderer.domElement.toDataURL();
-        const texture = new Texture({ name: SIDES[i] }).fromDataURL(dataURL);
+        const texture = new Texture({ name: face }).fromDataURL(dataURL);
         texture.add();
-        return texture;
+        return { face, texture };
     });
 }
 

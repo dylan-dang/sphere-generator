@@ -1,7 +1,6 @@
 import { Options } from './dialog';
 import { generateTextures } from './texture';
 import { Vector3 } from 'three';
-import { SIDES } from './common';
 import THREE from 'three';
 
 function mapUV(face: CubeFaceDirection, point: Vector3): ArrayVector4 {
@@ -20,7 +19,7 @@ export async function generate(opts: Options) {
     const { origin, geometryDetail, size } = opts;
     const originVec = new THREE.Vector3().fromArray(origin);
 
-    let textures: Texture[] = await generateTextures(opts);
+    let textures = await generateTextures(opts);
     const group = new Group({
         name: 'sphere',
         origin,
@@ -40,19 +39,19 @@ export async function generate(opts: Options) {
         })
             .addTo(group)
             .init();
-        SIDES.forEach((side, i) => {
-            cube.faces[side].extend({
-                texture: textures[i],
-                uv: mapUV(side, point),
+        for (const { texture, face } of textures) {
+            cube.faces[face].extend({
+                texture,
+                uv: mapUV(face, point),
             });
-        });
+        }
         return cube;
     });
 
     Undo.finishEdit('Generated Shape', {
         outliner: true,
         elements,
-        textures,
+        textures: textures.map(({ texture }) => texture),
         group,
     });
 }
