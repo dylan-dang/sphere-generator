@@ -28,7 +28,7 @@ const form = {
     geometryDetail: { type: 'number', label: 'Geometry Detail', value: 2 },
     _: '_',
     smoothing: { type: 'checkbox', label: 'Smoothing', value: true },
-    texture: imageInput('equirectangular', 'Texture'),
+    equirectangular: imageInput('equirectangular', 'Texture'),
     north: imageInput('cube', 'North'),
     south: imageInput('cube', 'South'),
     east: imageInput('cube', 'East'),

@@ -1,7 +1,7 @@
 import { Options } from './dialog';
 import { generateTextures } from './texture';
 import { Vector3, Vector4 } from 'three';
-import { SIDES } from './texture/common';
+import { SIDES } from './common';
 import THREE from 'three';
 
 function mapUV(face: CubeFaceDirection, point: Vector3): ArrayVector4 {

@@ -3,8 +3,7 @@
 import type { Server } from 'http';
 
 declare global {
-    declare module '*.frag';
-    declare module '*.vert';
+    declare module '*.glsl';
 
     const DEBUG: boolean;
 
