@@ -68,14 +68,13 @@ const faces: FaceInfo[] = [
 ];
 
 export async function generateTextures(opts: Options) {
-    const { textureLength, rotation, smoothing } = opts;
+    const { textureLength, rotation } = opts;
     const renderer = new WebGLRenderer({
         antialias: false,
         preserveDrawingBuffer: true,
     });
     renderer.setSize(textureLength, textureLength);
     const texture = await loadTexture(renderer, opts);
-    texture.magFilter = smoothing ? LinearFilter : NearestFilter;
     const planeGeometry = new PlaneGeometry(2, 2);
     const scene = new Scene();
     const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -131,14 +130,18 @@ async function loadTexture(
         east,
         up,
         down,
+        smoothing,
     }: Options
 ): Promise<CubeTexture> {
+    const filter = smoothing ? LinearFilter : NearestFilter;
     if (mapping == 'equirectangular' && equirectangular) {
         const loader = new TextureLoader();
         const texture = await loader.loadAsync(equirectangular);
-        const target = new WebGLCubeRenderTarget(
-            textureLength
-        ).fromEquirectangularTexture(renderer, texture);
+        texture.magFilter = texture.minFilter = filter;
+        const target = new WebGLCubeRenderTarget(textureLength, {
+            magFilter: filter,
+            minFilter: filter,
+        }).fromEquirectangularTexture(renderer, texture);
         return target.texture;
     }
     const loader = new CubeTextureLoader();
@@ -147,5 +150,6 @@ async function loadTexture(
             side && mapping == 'cube' ? side : missing
         )
     );
+    texture.magFilter = texture.minFilter = filter;
     return texture;
 }
