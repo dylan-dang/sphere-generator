@@ -1,6 +1,6 @@
 import { Options } from './dialog';
 import { generateTextures } from './texture';
-import { Vector3, Vector4 } from 'three';
+import { Vector3 } from 'three';
 import { SIDES } from './common';
 import THREE from 'three';
 
