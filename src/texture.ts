@@ -1,4 +1,3 @@
-import { error } from './common';
 import { Options } from './dialog';
 import fragmentShader from './shaders/fragment.glsl';
 import vertexShader from './shaders/vertex.glsl';
@@ -19,9 +18,6 @@ import {
     LinearFilter,
     NearestFilter,
 } from 'three';
-
-const missing =
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIAAQMAAADOtka5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURf8A/wAAAJ+mFPIAAAAJcEhZcwAADsIAAA7CARUoSoAAAACTSURBVHja7c4xDQAACASx928aJDAwQXoCmstUDQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbIEDiwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+A0kDXH3Dske5kGcAAAAASUVORK5CYII=';
 
 interface FaceInfo {
     face: CubeFaceDirection;
@@ -187,4 +183,9 @@ function preprocessCubeFaces({ textureLength, smoothing, mapping }: Options) {
             };
             image.src = src;
         });
+}
+
+export function error(message: string): Error {
+    Blockbench.showQuickMessage(message, 2000);
+    return new Error(message);
 }
